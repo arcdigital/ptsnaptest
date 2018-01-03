@@ -1,0 +1,326 @@
+name: nextcloud
+version: 12.0.4snap1
+summary: Nextcloud Server - A safe home for all your data
+description: |
+ Access, share and protect your files, calendars, contacts, communication and
+ more at home and in your enterprise.
+
+grade: stable
+confinement: strict
+
+apps:
+  # Apache daemon
+  apache:
+    command: run-httpd -k start -DFOREGROUND
+    stop-command: run-httpd -k stop
+    daemon: simple
+    restart-condition: always
+    plugs: [network, network-bind]
+
+  # MySQL daemon
+  mysql:
+    command: start_mysql
+    stop-command: support-files/mysql.server stop
+    daemon: simple
+    restart-condition: always
+    plugs: [network, network-bind]
+
+  # PHP FPM daemon
+  php-fpm:
+    command: start-php-fpm
+    daemon: simple
+    restart-condition: always
+    plugs: [network, network-bind, removable-media]
+
+  # redis server daemon
+  redis-server:
+    command: start-redis-server
+    daemon: simple
+    restart-condition: always
+    plugs: [network, network-bind]
+
+  # MySQL client
+  mysql-client:
+    command: mysql --defaults-file=$SNAP_DATA/mysql/root.ini
+    plugs: [network, network-bind]
+
+  mysqldump:
+    command: mysqldump --defaults-file=$SNAP_DATA/mysql/root.ini --lock-tables nextcloud
+    plugs: [network, network-bind]
+
+  # Nextcloud occ command
+  occ:
+    command: occ
+    plugs: [network, network-bind, removable-media]
+
+  enable-https:
+    command: enable-https
+    plugs: [network, network-bind]
+
+  disable-https:
+    command: disable-https
+    plugs: [network, network-bind]
+
+  renew-certs:
+    command: renew-certs
+    daemon: simple
+    restart-condition: always
+    plugs: [network, network-bind]
+
+  nextcloud-cron:
+    command: nextcloud-cron
+    daemon: simple
+    restart-condition: always
+    plugs: [network, network-bind, removable-media]
+
+  # Command for manually installing instead of visiting site to create admin.
+  manual-install:
+    command: manual-install
+    plugs: [network, network-bind, removable-media]
+
+hooks:
+  configure:
+    plugs: [network, network-bind]
+
+parts:
+  apache:
+    plugin: apache
+    source: http://ftp.wayne.edu/apache/httpd/httpd-2.4.28.tar.bz2
+    source-checksum: sha256/c1197a3a62a4ab5c584ab89b249af38cf28b4adee9c0106b62999fd29f920666
+
+    # The built-in Apache modules to enable
+    modules:
+      - headers
+      - proxy
+      - proxy_fcgi
+      - setenvif
+      - env
+      - rewrite
+      - mime
+      - dir
+      - authz_core
+      - unixd
+      - alias
+      - ssl
+      - socache_shmcb
+
+    filesets:
+      exclude:
+        - -man
+        - -manual
+        - -htdocs
+        - -include
+        - -build
+        - -conf/httpd.conf
+        - -conf/magic
+        - -conf/original
+        - -conf/extra
+        - -bin/apachectl
+        - -bin/envvars*
+    stage:
+      - $exclude
+    prime:
+      - $exclude
+
+  apache-customizations:
+    plugin: copy
+    files:
+      src/apache/scripts/*: bin/
+      src/apache/conf/*: conf/
+      src/apache/utilities/*: utilities/
+
+  nextcloud:
+    plugin: dump
+    source: https://download.nextcloud.com/server/releases/nextcloud-12.0.4.tar.bz2
+    source-checksum: sha256/654161a74ceaf9a60c7731d7d6702e6710a972633a97955d16f01abeb09d09b6
+    organize:
+      '*': htdocs/
+      '.htaccess': htdocs/.htaccess
+      '.user.ini': htdocs/.user.ini
+
+    # This snap automatically updates. No need to include the updater to nag
+    # users. This does not result in an integrity check failure.
+    prime:
+      - -htdocs/apps/updatenotification
+
+  php:
+    plugin: php
+    source: http://us2.php.net/get/php-7.0.25.tar.bz2/from/this/mirror
+    source-checksum: sha256/95a24d96d126a196e1550e394182b43a6460cdd2026f1a77bef01e422415cc25
+    source-type: tar
+    install-via: prefix
+    configflags:
+      - --enable-fpm
+      - --disable-cgi
+      - --disable-phar
+      - --disable-phpdbg
+      - --enable-ctype
+      - --enable-mbstring
+      - --enable-zip
+      - --with-pdo-mysql
+      - --with-zlib
+      - --with-gd
+      - --with-curl
+      - --with-openssl
+      - --with-bz2
+      - --with-mcrypt
+      - --enable-exif
+      - --enable-intl
+      - --with-jpeg-dir=/usr/lib
+      - --disable-rpath
+    stage-packages:
+      # These are only included here until the OS snap stabilizes
+      - libxml2
+      - libpng12-0
+    build-packages:
+      - libxml2-dev
+      - libcurl4-openssl-dev
+      - libpng12-dev
+      - libjpeg9-dev
+      - libbz2-dev
+      - libmcrypt-dev
+    prime:
+     - -sbin/
+     - -etc/
+    organize:
+      # Put php-fpm in bin with everything else, not sbin.
+      sbin/php-fpm: bin/php-fpm
+    extensions:
+      # Build the redis PHP module
+      - source: https://github.com/phpredis/phpredis/archive/3.1.4.tar.gz
+        source-checksum: sha256/656cab2eb93bd30f30701c1280707c60e5736c5420212d5d547ebe0d3f4baf71
+
+  redis:
+    plugin: redis
+    source: http://download.redis.io/releases/redis-4.0.2.tar.gz
+    source-checksum: sha256/b1a0915dbc91b979d06df1977fe594c3fa9b189f1f3d38743a2948c9f7634813
+
+  redis-customizations:
+    plugin: copy
+    files:
+      src/redis/config/*: config/redis/
+      src/redis/scripts/*: bin/
+      src/redis/utilities/*: utilities/
+
+  # Copy over our PHP configuration file.
+  php-customizations:
+    plugin: copy
+    files:
+      src/php/config/*: config/php/
+      src/php/scripts/*: bin/
+      src/php/utilities/*: utilities/
+    stage-packages: [mawk]
+
+  # Copy over our Nextcloud configuration files
+  nextcloud-customizations:
+    plugin: copy
+    files:
+      src/nextcloud/config/*: htdocs/config/
+      src/nextcloud/scripts/*: bin/
+      src/nextcloud/utilities/*: utilities/
+
+  # Download the boost headers for MySQL. Note that the version used may need to
+  # be updated if the version of MySQL changes.
+  boost:
+    plugin: copy
+    source: https://github.com/kyrofa/boost_tarball/raw/master/boost_1_59_0.tar.gz
+    source-checksum: sha1/5123209db194d66d69a9cfa5af8ff473d5941d97
+    files:
+      '*': boost/
+    prime:
+      - -*
+
+  mysql:
+    plugin: cmake
+    source: https://github.com/kyrofa/mysql-server.git
+    source-type: git
+    source-branch: mysql-5.7.18_support_no_setpriority
+    after: [boost]
+    configflags:
+      - -DWITH_BOOST=$SNAPCRAFT_STAGE/boost
+      - -DWITH_INNODB_PAGE_CLEANER_PRIORITY=OFF
+      - -DCMAKE_INSTALL_PREFIX=/
+      - -DBUILD_CONFIG=mysql_release
+      - -DWITH_UNIT_TESTS=OFF
+      - -DWITH_EMBEDDED_SERVER=OFF
+      - -DWITH_EMBEDDED_SHARED_LIBRARY=OFF
+      - -DWITH_ARCHIVE_STORAGE_ENGINE=OFF
+      - -DWITH_BLACKHOLE_STORAGE_ENGINE=OFF
+      - -DWITH_FEDERATED_STORAGE_ENGINE=OFF
+      - -DWITH_PARTITION_STORAGE_ENGINE=OFF
+      - -DINSTALL_MYSQLTESTDIR=
+    build-packages:
+      - wget
+      - g++
+      - cmake
+      - bison
+      - libncurses5-dev
+      - libaio-dev
+    stage:
+      # Remove scripts that we'll be replacing with our own
+      - -support-files/mysql.server
+    prime:
+      # Remove scripts that we'll be replacing with our own
+      - -support-files/mysql.server
+
+      # Remove unused binaries that waste space
+      - -bin/innochecksum
+      - -bin/lz4_decompress
+      - -bin/myisam*
+      - -bin/mysqladmin
+      - -bin/mysqlbinlog
+      - -bin/mysql_client_test
+      - -bin/mysql_config*
+      - -bin/mysqld_multi
+      - -bin/mysqlimport
+      - -bin/mysql_install_db
+      - -bin/mysql_plugin
+      - -bin/mysqlpump
+      - -bin/mysql_secure_installation
+      - -bin/mysqlshow
+      - -bin/mysqlslap
+      - -bin/mysql_ssl_rsa_setup
+      - -bin/mysqltest
+      - -bin/mysql_tzinfo_to_sql
+      - -bin/perror
+      - -bin/replace
+      - -bin/resolveip
+      - -bin/resolve_stack_dump
+      - -bin/zlib_decompress
+
+  # Copy over our MySQL scripts
+  mysql-customizations:
+    plugin: copy
+    files:
+      # This one is what creates the initial database and account for Nextcloud.
+      src/mysql/start_mysql: bin/
+      src/mysql/my.cnf: my.cnf
+      src/mysql/mysql.server: support-files/
+      src/mysql/utilities/*: utilities/
+
+  delay-on-failure:
+    plugin: copy
+    files:
+      src/delay-on-failure/delay-on-failure: bin/
+
+  certbot-nextcloud-plugin:
+    plugin: python
+    python-version: python2
+    source: src/https/
+    build-packages: [python-dev, libffi-dev]
+    python-packages: [cffi]
+
+  setup-https:
+    plugin: copy
+    files:
+      src/https/scripts/*: bin/
+      src/https/utilities/*: utilities/
+    stage-packages: [openssl]
+    stage: [-etc/ssl]
+    prime: [-etc/ssl]
+
+  hooks:
+    plugin: dump
+    source: src/hooks
+    organize:
+      'bin/': snap/hooks/

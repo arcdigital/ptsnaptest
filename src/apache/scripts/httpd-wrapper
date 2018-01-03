@@ -1,0 +1,26 @@
+#!/bin/sh
+
+. $SNAP/utilities/https-utilities
+. $SNAP/utilities/apache-utilities
+. $SNAP/utilities/php-utilities
+
+params=""
+if certificates_are_active; then
+	echo "Certificates have been activated: using HTTPS only"
+	params="$params -DEnableHTTPS"
+
+	# Enable HSTS if possible
+	if should_enable_hsts; then
+		echo "Certificates look to be in order: enabling HSTS"
+		params="$params -DEnableHSTS"
+	else
+		echo "Certificates appear self-signed: disabling HSTS"
+	fi
+else
+	echo "No certificates are active: using HTTP only"
+fi
+
+export HTTP_PORT="$(apache_http_port)"
+export HTTPS_PORT="$(apache_https_port)"
+
+httpd -d $SNAP $params $@
