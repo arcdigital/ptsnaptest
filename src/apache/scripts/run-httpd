@@ -8,11 +8,11 @@ wait_for_configure_hook
 
 mkdir -p -m 750 $SNAP_DATA/apache/logs
 
-# Make sure Nextcloud is installed and running
-echo "Making sure nextcloud is setup..."
+# Make sure Pterodactyl is installed and running
+echo "Making sure pterodactyl is setup..."
 setup_nextcloud
 if [ $? -ne 0 ]; then
-	echo "Failed to setup nextcloud"
+	echo "Failed to setup pterodactyl"
         exit 1
 fi
 

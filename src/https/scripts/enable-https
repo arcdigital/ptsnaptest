@@ -2,7 +2,7 @@
 
 . $SNAP/utilities/https-utilities
 
-COMMAND="nextcloud.enable-https"
+COMMAND="pterodactyl.enable-https"
 
 print_usage()
 {
@@ -105,8 +105,8 @@ handle_lets_encrypt()
 
 	echo -n "Attempting to obtain certificates... "
 	output=$(run_certbot certonly $extra_params \
-	         --authenticator nextcloud:webroot \
-	         --nextcloud:webroot-path $CERTBOT_DIRECTORY \
+	         --authenticator pterodactyl:webroot \
+	         --pterodactyl:webroot-path $CERTBOT_DIRECTORY \
 	         --rsa-key-size 4096 \
 	         --email $email \
 	         --non-interactive \

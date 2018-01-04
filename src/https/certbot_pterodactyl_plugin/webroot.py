@@ -1,4 +1,4 @@
-"""Nextcloud Webroot plugin."""
+"""Pterodactyl Webroot plugin."""
 import argparse
 import collections
 import errno
@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 @zope.interface.implementer(interfaces.IAuthenticator)
 @zope.interface.provider(interfaces.IPluginFactory)
 class Authenticator(common.Plugin):
-    """Nextcloud Webroot Authenticator."""
+    """Pterodactyl Webroot Authenticator."""
 
     description = "Place files in webroot directory without running chown"
 
