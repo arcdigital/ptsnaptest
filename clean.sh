@@ -1,3 +1,3 @@
 #!/bin/bash
 
-snapcraft clean apache-customizations nextcloud redis-customizations php-customizations nextcloud-customizations mysql-customizations certbot-nextcloud-plugin delay-on-failure setup-https hooks
+snapcraft clean apache-customizations pterodactyl redis-customizations php-customizations pterodactyl-customizations mysql-customizations certbot-pterodactyl-plugin delay-on-failure setup-https hooks

@@ -3,7 +3,7 @@
 . $SNAP/utilities/mysql-utilities
 . $SNAP/utilities/php-utilities
 . $SNAP/utilities/redis-utilities
-. $SNAP/utilities/nextcloud-utilities
+. $SNAP/utilities/pterodactyl-utilities
 
 if [ $(id -u) -ne 0 ]; then
 	echo "This utility needs to run as root"
@@ -12,6 +12,6 @@ fi
 
 # occ can't do much before PHP FPM is up and running
 wait_for_php
-wait_for_nextcloud_to_be_configured
+wait_for_pterodactyl_to_be_configured
 
-php -c $SNAP/config/php $SNAP/htdocs/occ $*
+php -c $SNAP/config/php $SNAP/htdocs/artisan $*

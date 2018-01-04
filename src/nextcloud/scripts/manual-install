@@ -2,7 +2,7 @@
 
 . $SNAP/utilities/php-utilities
 . $SNAP/utilities/mysql-utilities
-. $SNAP/utilities/nextcloud-utilities
+. $SNAP/utilities/pterodactyl-utilities
 
 COMMAND="nextcloud.manual-install"
 
@@ -13,7 +13,7 @@ print_usage()
 	echo "    Display this help message."
 	echo ""
 	echo "    $COMMAND <username> <password>"
-	echo "    Install Nextcloud, creating the admin user with the provided"
+	echo "    Install Pterodactyl, creating the admin user with the provided"
 	echo "    credentials."
 }
 
@@ -50,14 +50,14 @@ wait_for_mysql
 
 # Now we can use 'occ maintenance:install'
 
-mysql_nextcloud_password="$(mysql_get_nextcloud_password)"
-if [ -n "$mysql_nextcloud_password" ]; then
+mysql_pterodactyl_password="$(mysql_get_pterodactyl_password)"
+if [ -n "$mysql_pterodactyl_password" ]; then
 	occ maintenance:install \
 		--database="mysql" \
-		--database-name="nextcloud" \
-		--database-user="nextcloud" \
+		--database-name="pterodactyl" \
+		--database-user="pterodactyl" \
 		--database-host="localhost:$MYSQL_SOCKET" \
-		--database-pass="$mysql_nextcloud_password" \
+		--database-pass="$mysql_pterodactyl_password" \
 		--data-dir="$NEXTCLOUD_DATA_DIR" \
 		--admin-user="$username" \
 		--admin-pass="$password"

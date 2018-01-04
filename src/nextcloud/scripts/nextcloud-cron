@@ -1,9 +1,9 @@
 #!/bin/sh
 
-. $SNAP/utilities/nextcloud-utilities
+. $SNAP/utilities/pterodactyl-utilities
 
-echo -n "Waiting for Nextcloud config dir... "
-while [ ! -d "$NEXTCLOUD_CONFIG_DIR" ]; do
+echo -n "Waiting for Pterodactyl config dir... "
+while [ ! -d "$PTERODACTYL_CONFIG_DIR" ]; do
 	sleep 1
 done
 

@@ -3,7 +3,7 @@
 . $SNAP/utilities/mysql-utilities
 . $SNAP/utilities/php-utilities
 . $SNAP/utilities/redis-utilities
-. $SNAP/utilities/nextcloud-utilities
+. $SNAP/utilities/pterodactyl-utilities
 . $SNAP/utilities/hook-utilities
 
 mkdir -p -m 750 ${SNAP_DATA}/php
@@ -15,17 +15,17 @@ wait_for_configure_hook
 # We need to make sure mysql is running so we can run the migration process
 wait_for_mysql
 
-# Wait until we have an nextcloud mysql password
-echo -n "Obtaining nextcloud mysql credentials... "
-nextcloud_password_path=$SNAP_DATA/mysql/nextcloud_password
+# Wait until we have an pterodactyl mysql password
+echo -n "Obtaining pterodactyl mysql credentials... "
+pterodactyl_password_path=$SNAP_DATA/mysql/pterodactyl_password
 timeout=10
-while [ $timeout -gt 0 -a ! -e $nextcloud_password_path ]; do
+while [ $timeout -gt 0 -a ! -e $pterodactyl_password_path ]; do
 	timeout=$((timeout-1))
 	sleep 1
 done
-if [ ! -e $nextcloud_password_path ]; then
+if [ ! -e $pterodactyl_password_path ]; then
 	echo ""
-	echo -n "Timed out while attempting to obtain nextcloud mysql password. "
+	echo -n "Timed out while attempting to obtain pterodactyl mysql password. "
 	echo -n "This isn't unusual when starting up for the first time after "
 	echo "an install or an upgrade. Will try again."
 	exit 1

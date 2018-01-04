@@ -1,0 +1,20 @@
+#!/bin/sh
+
+export PTERODACTYL_CONFIG_DIR=$SNAP_DATA/nextcloud/config
+export PTERODACTYL_DATA_DIR=$SNAP_COMMON/nextcloud/data
+
+pterodactyl_is_configured()
+{
+	[ -d "$PTERODACTYL_CONFIG_DIR" ]
+}
+
+wait_for_pterodactyl_to_be_configured()
+{
+	if ! pterodactyl_is_configured; then
+		echo -n "Waiting for Pterodactyl to be configured... "
+		while ! pterodactyl_is_configured; do
+			sleep 1
+		done
+		echo "done"
+	fi
+}

@@ -2,7 +2,7 @@
 
 . $SNAP/utilities/php-utilities
 . $SNAP/utilities/mysql-utilities
-. $SNAP/utilities/nextcloud-utilities
+. $SNAP/utilities/pterodactyl-utilities
 . $SNAP/utilities/redis-utilities
 
 # Make sure nextcloud directory exists

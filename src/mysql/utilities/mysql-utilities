@@ -2,7 +2,7 @@
 
 export MYSQL_PIDFILE="/tmp/pids/mysql.pid"
 export MYSQL_SOCKET="/tmp/sockets/mysql.sock"
-export NEXTCLOUD_PASSWORD_FILE="$SNAP_DATA/mysql/nextcloud_password"
+export PTERODACTYL_PASSWORD_FILE="$SNAP_DATA/mysql/pterodactyl_password"
 
 mkdir -p -m 750 "$(dirname $MYSQL_PIDFILE)"
 mkdir -p -m 750 "$(dirname $MYSQL_SOCKET)"
@@ -33,18 +33,18 @@ mysql_pid()
 	fi
 }
 
-mysql_set_nextcloud_password()
+mysql_set_pterodactyl_password()
 {
-	echo "$1" > "$NEXTCLOUD_PASSWORD_FILE"
-	chmod 600 "$NEXTCLOUD_PASSWORD_FILE"
+	echo "$1" > "$PTERODACTYL_PASSWORD_FILE"
+	chmod 600 "$PTERODACTYL_PASSWORD_FILE"
 }
 
-mysql_get_nextcloud_password()
+mysql_get_pterodactyl_password()
 {
-	if [ -f "$NEXTCLOUD_PASSWORD_FILE" ]; then
-		cat "$NEXTCLOUD_PASSWORD_FILE"
+	if [ -f "$PTERODACTYL_PASSWORD_FILE" ]; then
+		cat "$PTERODACTYL_PASSWORD_FILE"
 	else
-		echo "MySQL Nextcloud password has not yet been generated" >&2
+		echo "MySQL Pterodactyl password has not yet been generated" >&2
 		echo ""
 	fi
 }
