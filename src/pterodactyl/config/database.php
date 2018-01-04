@@ -34,7 +34,7 @@ return [
     'connections' => [
         'mysql' => [
             'driver'        => 'mysql',
-            'unix_socket'   => 'localhost:'.env('MYSQL_SOCKET'),
+            'unix_socket'   => 'localhost:/tmp/sockets/mysql.sock',
             'database'      => 'pterodactyl',
             'username'      => 'pterodactyl',
             'password'      => trim(file_get_contents(env('SNAP_DATA').'/mysql/pterodactyl_password')),
@@ -72,8 +72,7 @@ return [
     'redis' => [
         'client' => 'phpredis',
         'default' => [
-            'host' => env('REDIS_SOCKET'),
-            'password' => env('REDIS_PASSWORD', null),
+            'host' => '/tmp/sockets/redis.sock',
             'database' => 0,
         ],
     ],
