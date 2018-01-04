@@ -5,51 +5,43 @@
 . $SNAP/utilities/pterodactyl-utilities
 . $SNAP/utilities/redis-utilities
 
+# Make sure pterodactyl panel config directory exists
+mkdir -p -m 750 $SNAP_DATA/pterodactyl-panel/config
+
 # Make sure pterodactyl panel storage directory exists
-mkdir -p -m 750 $SNAP_COMMON/storage
+mkdir -p -m 750 $SNAP_COMMON/pterodactyl-panel/storage
 
 # Make sure pterodactyl panel tmp directory exists
 mkdir -p -m 750 $SNAP_COMMON/tmp
 
-# We need both PHP and redis up and running before we can use occ
+# We need both PHP and redis up and running
 wait_for_php
 wait_for_redis
 
 # If this is a new install, make sure it's configured correctly
 if [ ! -d "$PTERODACTYL_CONFIG_DIR" ]; then
-	echo "Configuring Pterodactyl Panel..."
+	echo "Configuring Pterodactyl Panel (new installation)..."
 	cp -r $SNAP/htdocs/config $PTERODACTYL_CONFIG_DIR
+	laravel_key=$(artisan key:generate --show)
+	pterodactyl_set_key "$laravel_key"
 else
-	# We'll also always copy over the autoconfig.php, since it's only used
-	# upon installation. Just in case they haven't done that yet.
-	cp -r $SNAP/htdocs/config/autoconfig.php $PTERODACTYL_CONFIG_DIR/
-
-	# Also make sure we're using Redis for the memcache and file locking.
-	occ config:system:set redis host --value="$REDIS_SOCKET" --type=string
-	occ config:system:set redis port --value=0 --type=integer
-	occ config:system:set memcache.locking --value="\OC\Memcache\Redis" --type=string
-	occ config:system:set memcache.local --value="\OC\Memcache\Redis" --type=string
+	# Do nothing for now
+	sleep 1
 fi
 
-# Finally, make sure pterodactyl panel is up to date. The return code of the upgrade
-# can be used to determine the outcome:
-#    succes = 0;
-#    not installed = 1;
-#    in maintenance mode = 2;
-#    already up to date = 3;
-#    invalid arguments  = 4;
-#    other failure = 5;
+# Finally, make sure pterodactyl panel is up to date.
 echo "Making sure Pterodactyl Panel is fully upgraded..."
-occ upgrade --no-interaction
-return_code=$?
-if [ $return_code -eq 1 ]; then
-	echo "Pterodactyl Panel is not yet installed-- no upgrade necessary"
-elif [ $return_code -eq 3 ]; then
-	echo "Pterodactyl Panel is fully upgraded"
-elif [ $return_code -ne 0 ]; then
-	echo "Unable to upgrade Pterodactyl Panel. Will try again."
-	# occ may have left it in maintenance mode, so turn that off
-	occ maintenance:mode --off
-	sleep 10 # Delaying here so systemd doesn't throttle us
-	exit 1
-fi
+artisan migrate --seed
+
+#return_code=$?
+#if [ $return_code -eq 1 ]; then
+#	echo "Pterodactyl Panel is not yet installed-- no upgrade necessary"
+#elif [ $return_code -eq 3 ]; then
+#	echo "Pterodactyl Panel is fully upgraded"
+#elif [ $return_code -ne 0 ]; then
+#	echo "Unable to upgrade Pterodactyl Panel. Will try again."
+#	# occ may have left it in maintenance mode, so turn that off
+#	occ maintenance:mode --off
+#	sleep 10 # Delaying here so systemd doesn't throttle us
+#	exit 1
+#fi

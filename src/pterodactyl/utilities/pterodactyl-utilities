@@ -1,7 +1,8 @@
 #!/bin/sh
 
-export PTERODACTYL_CONFIG_DIR=$SNAP_DATA/pterodactyl/config
-export PTERODACTYL_DATA_DIR=$SNAP_COMMON/pterodactyl/data
+export PTERODACTYL_CONFIG_DIR="$SNAP_DATA/pterodactyl-panel/config"
+export PTERODACTYL_STORAGE_DIR="$SNAP_COMMON/pterodactyl-panel/storage"
+export PTERODACTYL_KEY_FILE="$SNAP_DATA/pterodactyl-panel/app_key"
 
 pterodactyl_is_configured()
 {
@@ -16,5 +17,21 @@ wait_for_pterodactyl_to_be_configured()
 			sleep 1
 		done
 		echo "done"
+	fi
+}
+
+pterodactyl_set_key()
+{
+	echo "$1" > "$PTERODACTYL_PASSWORD_FILE"
+	chmod 600 "$PTERODACTYL_PASSWORD_FILE"
+}
+
+pterodactyl_get_key()
+{
+	if [ -f "$PTERODACTYL_PASSWORD_FILE" ]; then
+		cat "$PTERODACTYL_PASSWORD_FILE"
+	else
+		echo "Pterodactyl Panel App Key has not yet been generated" >&2
+		echo ""
 	fi
 }
