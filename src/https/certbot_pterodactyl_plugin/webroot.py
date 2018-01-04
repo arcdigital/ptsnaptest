@@ -1,4 +1,4 @@
-"""Pterodactyl Webroot plugin."""
+"""Pterodactyl Panel Webroot plugin."""
 import argparse
 import collections
 import errno
@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 @zope.interface.implementer(interfaces.IAuthenticator)
 @zope.interface.provider(interfaces.IPluginFactory)
 class Authenticator(common.Plugin):
-    """Pterodactyl Webroot Authenticator."""
+    """Pterodactyl Panel Webroot Authenticator."""
 
     description = "Place files in webroot directory without running chown"
 

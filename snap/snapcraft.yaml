@@ -68,8 +68,8 @@ apps:
     restart-condition: always
     plugs: [network, network-bind]
 
-  nextcloud-cron:
-    command: nextcloud-cron
+  pterodactyl-cron:
+    command: pterodactyl-cron
     daemon: simple
     restart-condition: always
     plugs: [network, network-bind]
@@ -130,7 +130,7 @@ parts:
       src/apache/conf/*: conf/
       src/apache/utilities/*: utilities/
 
-  nextcloud:
+  pterodactyl:
     plugin: dump
     source: https://download.nextcloud.com/server/releases/nextcloud-12.0.4.tar.bz2
     source-checksum: sha256/654161a74ceaf9a60c7731d7d6702e6710a972633a97955d16f01abeb09d09b6
@@ -213,13 +213,13 @@ parts:
       src/php/utilities/*: utilities/
     stage-packages: [mawk]
 
-  # Copy over our Nextcloud configuration files
-  nextcloud-customizations:
+  # Copy over our Pterodactyl Panel configuration files
+  pterodactyl-customizations:
     plugin: copy
     files:
-      src/nextcloud/config/*: htdocs/config/
-      src/nextcloud/scripts/*: bin/
-      src/nextcloud/utilities/*: utilities/
+      src/pterodactyl/config/*: htdocs/config/
+      src/pterodactyl/scripts/*: bin/
+      src/pterodactyl/utilities/*: utilities/
 
   # Download the boost headers for MySQL. Note that the version used may need to
   # be updated if the version of MySQL changes.
@@ -294,7 +294,7 @@ parts:
   mysql-customizations:
     plugin: copy
     files:
-      # This one is what creates the initial database and account for Nextcloud.
+      # This one is what creates the initial database and account for Pterodactyl Panel.
       src/mysql/start_mysql: bin/
       src/mysql/my.cnf: my.cnf
       src/mysql/mysql.server: support-files/

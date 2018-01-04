@@ -2,7 +2,7 @@
 
 . $SNAP/utilities/pterodactyl-utilities
 
-echo -n "Waiting for Pterodactyl config dir... "
+echo -n "Waiting for Pterodactyl Panel config dir... "
 while [ ! -d "$PTERODACTYL_CONFIG_DIR" ]; do
 	sleep 1
 done

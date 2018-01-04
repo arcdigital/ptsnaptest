@@ -2,7 +2,7 @@
 
 . $SNAP/utilities/https-utilities
 
-COMMAND="pterodactyl.enable-https"
+COMMAND="pterodactyl-panel.enable-https"
 
 print_usage()
 {

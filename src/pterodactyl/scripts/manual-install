@@ -4,7 +4,7 @@
 . $SNAP/utilities/mysql-utilities
 . $SNAP/utilities/pterodactyl-utilities
 
-COMMAND="nextcloud.manual-install"
+COMMAND="pterodactyl-panel.manual-install"
 
 print_usage()
 {
@@ -13,7 +13,7 @@ print_usage()
 	echo "    Display this help message."
 	echo ""
 	echo "    $COMMAND <username> <password>"
-	echo "    Install Pterodactyl, creating the admin user with the provided"
+	echo "    Install Pterodactyl Panel, creating the admin user with the provided"
 	echo "    credentials."
 }
 
@@ -58,7 +58,7 @@ if [ -n "$mysql_pterodactyl_password" ]; then
 		--database-user="pterodactyl" \
 		--database-host="localhost:$MYSQL_SOCKET" \
 		--database-pass="$mysql_pterodactyl_password" \
-		--data-dir="$NEXTCLOUD_DATA_DIR" \
+		--data-dir="$PTERODACTYL_DATA_DIR" \
 		--admin-user="$username" \
 		--admin-pass="$password"
 fi

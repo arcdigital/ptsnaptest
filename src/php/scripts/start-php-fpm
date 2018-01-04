@@ -25,7 +25,7 @@ while [ $timeout -gt 0 -a ! -e $pterodactyl_password_path ]; do
 done
 if [ ! -e $pterodactyl_password_path ]; then
 	echo ""
-	echo -n "Timed out while attempting to obtain pterodactyl mysql password. "
+	echo -n "Timed out while attempting to obtain pterodactyl panel mysql password. "
 	echo -n "This isn't unusual when starting up for the first time after "
 	echo "an install or an upgrade. Will try again."
 	exit 1

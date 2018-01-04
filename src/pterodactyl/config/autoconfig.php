@@ -7,15 +7,15 @@ $data_path = '/var/snap/'.$snap_name.'/current';
 $database_password = trim(file_get_contents($data_path . '/mysql/pterodactyl_password'));
 
 $AUTOCONFIG = array(
-'directory' => getenv('NEXTCLOUD_DATA_DIR'),
+'directory' => getenv('PTERODACTYL_DATA_DIR'),
 
 'dbtype' => 'mysql',
 
 'dbhost' => 'localhost:'.getenv('MYSQL_SOCKET'),
 
-'dbname' => 'nextcloud',
+'dbname' => 'pterodactyl',
 
-'dbuser' => 'nextcloud',
+'dbuser' => 'pterodactyl',
 
 'dbpass' => $database_password,
 );

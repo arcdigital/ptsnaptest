@@ -8,12 +8,12 @@ $CONFIG = array(
  * which should be scanned for available apps, and where user-specific apps
  * should be installed from the Apps store. The ``path`` defines the absolute
  * file system path to the app folder. The key ``url`` defines the HTTP web path
- * to that folder, starting from the Nextcloud web root. The key ``writable``
+ * to that folder, starting from the Pterodactyl Panel web root. The key ``writable``
  * indicates if a web server can write files to that folder.
  */
 'apps_paths' => array(
 	/**
-	 * These are the default apps shipped with Nextcloud. They are read-only.
+	 * These are the default apps shipped with Pterodactyl Panel. They are read-only.
 	 */
 	array(
 		'path'=> '/snap/'.$snap_name.'/current/htdocs/apps',
@@ -25,7 +25,7 @@ $CONFIG = array(
 	 * This directory is writable, meant for apps installed by the user.
 	 */
 	array(
-		'path'=> '/var/snap/'.$snap_name.'/current/nextcloud/extra-apps',
+		'path'=> '/var/snap/'.$snap_name.'/current/pterodactyl/extra-apps',
 		'url' => '/extra-apps',
 		'writable' => true,
 	),
