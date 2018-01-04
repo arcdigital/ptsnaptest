@@ -132,17 +132,10 @@ parts:
 
   pterodactyl:
     plugin: dump
-    source: https://download.nextcloud.com/server/releases/nextcloud-12.0.4.tar.bz2
-    source-checksum: sha256/654161a74ceaf9a60c7731d7d6702e6710a972633a97955d16f01abeb09d09b6
+    source: https://github.com/Pterodactyl/Panel/archive/v0.6.4.tar.gz
+    source-checksum: sha256/83f1d542d94c97aedb24dce41aad14421db333ac07901dd6fb9e9d6ec147845f
     organize:
       '*': htdocs/
-      '.htaccess': htdocs/.htaccess
-      '.user.ini': htdocs/.user.ini
-
-    # This snap automatically updates. No need to include the updater to nag
-    # users. This does not result in an integrity check failure.
-    prime:
-      - -htdocs/apps/updatenotification
 
   php:
     plugin: php
