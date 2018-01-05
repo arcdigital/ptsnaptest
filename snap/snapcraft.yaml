@@ -202,9 +202,8 @@ parts:
   
   composer:
     plugin: copy
-    source: https://github.com/composer/composer/archive/1.6.1.tar.gz
     files:
-      bin/composer: bin/composer
+      src/composer/bin/composer: bin/composer
 
   redis:
     plugin: redis
