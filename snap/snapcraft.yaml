@@ -203,7 +203,7 @@ parts:
   composer:
     plugin: copy
     files:
-      src/composer/bin/composer: bin/composer
+      src/composer/bin/composer.phar: bin/composer
 
   redis:
     plugin: redis
