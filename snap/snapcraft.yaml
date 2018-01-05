@@ -78,6 +78,10 @@ apps:
     command: bin/php
     plugs: [network, network-bind]
 
+  composer:
+    command: bin/composer
+    plugs: [network]
+
   # Command for manually installing instead of visiting site to create admin.
   manual-install:
     command: manual-install
@@ -195,6 +199,12 @@ parts:
       # Build the redis PHP module
       - source: https://github.com/phpredis/phpredis/archive/3.1.6.tar.gz
         source-checksum: sha256/e0f00bd46f4790bf6e763762d9559d7175415e2f1ea1fcfea898bfb5298b43c4
+  
+  composer:
+    plugin: dump
+    source: https://github.com/composer/composer/archive/1.6.1.tar.gz
+    organize:
+      'bin/composer': bin/composer
 
   redis:
     plugin: redis

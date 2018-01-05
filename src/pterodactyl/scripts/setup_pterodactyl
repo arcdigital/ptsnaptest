@@ -5,9 +5,6 @@
 . $SNAP/utilities/pterodactyl-utilities
 . $SNAP/utilities/redis-utilities
 
-# Make sure pterodactyl panel config directory exists
-mkdir -p -m 750 $SNAP_DATA/pterodactyl-panel/config
-
 # Make sure pterodactyl panel storage directory exists
 mkdir -p -m 750 $SNAP_COMMON/pterodactyl-panel/storage
 
@@ -17,6 +14,11 @@ mkdir -p -m 750 $SNAP_COMMON/tmp
 # We need both PHP and redis up and running
 wait_for_php
 wait_for_redis
+
+# Need to install dependencies first, so we can generate a key if needed.
+# TODO: We should really ship these dependencies in the snap.
+echo "Installing dependencies via composer"
+composer install --no-dev --prefer-dist
 
 # If this is a new install, make sure it's configured correctly
 if [ ! -d "$PTERODACTYL_CONFIG_DIR" ]; then
@@ -30,7 +32,7 @@ else
 fi
 
 # Finally, make sure pterodactyl panel is up to date.
-echo "Making sure Pterodactyl Panel is fully upgraded..."
+echo "Making sure Pterodactyl Panel is fully migrated/seeded..."
 artisan migrate --seed
 
 #return_code=$?

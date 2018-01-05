@@ -14,4 +14,4 @@ fi
 wait_for_php
 wait_for_pterodactyl_to_be_configured
 
-$SNAP/bin/php -c $SNAP/config/php $SNAP/htdocs/artisan $*
+php -c $SNAP/config/php $SNAP/htdocs/artisan $*
