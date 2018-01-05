@@ -142,9 +142,9 @@ parts:
       '*': htdocs/
     filesets:
       exclude:
-        - -bootstrap/app.php
-        - -config/app.php
-        - -config/database.php
+        - -htdocs/bootstrap/app.php
+        - -htdocs/config/app.php
+        - -htdocs/config/database.php
 
   php:
     plugin: php
