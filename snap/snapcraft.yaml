@@ -140,11 +140,13 @@ parts:
     source-checksum: sha256/83f1d542d94c97aedb24dce41aad14421db333ac07901dd6fb9e9d6ec147845f
     organize:
       '*': htdocs/
-    filesets:
-      exclude:
+    stage:
         - -htdocs/bootstrap/app.php
         - -htdocs/config/app.php
         - -htdocs/config/database.php
+        - -bootstrap/app.php
+        - -config/app.php
+        - -config/database.php
 
   php:
     plugin: php
