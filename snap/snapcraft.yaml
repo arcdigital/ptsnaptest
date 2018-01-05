@@ -201,10 +201,10 @@ parts:
         source-checksum: sha256/e0f00bd46f4790bf6e763762d9559d7175415e2f1ea1fcfea898bfb5298b43c4
   
   composer:
-    plugin: dump
+    plugin: copy
     source: https://github.com/composer/composer/archive/1.6.1.tar.gz
-    organize:
-      'bin/composer': bin/composer
+    files:
+      bin/composer: bin/composer
 
   redis:
     plugin: redis
