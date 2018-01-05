@@ -74,8 +74,8 @@ apps:
     restart-condition: always
     plugs: [network, network-bind]
 
-  mysqldump:
-    command: php
+  php:
+    command: bin/php
     plugs: [network, network-bind]
 
   # Command for manually installing instead of visiting site to create admin.
