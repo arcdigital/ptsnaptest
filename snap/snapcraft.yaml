@@ -226,7 +226,6 @@ parts:
       src/pterodactyl/utilities/*: utilities/
       src/pterodactyl/bootstrap/*: htdocs/bootstrap/
       src/pterodactyl/app/*: htdocs/app/
-    after: [pterodactyl]
 
   # Download the boost headers for MySQL. Note that the version used may need to
   # be updated if the version of MySQL changes.
